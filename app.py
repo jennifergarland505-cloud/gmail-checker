@@ -2,20 +2,21 @@ import streamlit as st
 import smtplib
 import re
 import pandas as pd
+import time
 
-# Page setup ar title config
+# পেজ কনফিগারেশন
 st.set_page_config(
-    page_title="Gmail Account Checker",
-    page_icon="📧",
-    layout="centered"
+    page_title="Premium Gmail Validator Pro",
+    page_icon="🛡️",
+    layout="wide"
 )
 
-# Email format check korar regex function
+# ইমেইল ফরম্যাট চেক করার ফাংশন
 def is_valid_email_format(email):
     pattern = r'^[a-zA-Z0-9_.+-]+@gmail\.com$'
     return re.match(pattern, email) is not None
 
-# SMTP diye Gmail active kina check korar main core function
+# জিমেইল সার্ভার ভ্যালিডেশন ফাংশন
 def check_gmail(email):
     if not is_valid_email_format(email):
         return "Invalid Format"
@@ -24,108 +25,148 @@ def check_gmail(email):
     port = 25
 
     try:
-        # Connecting to Google's SMTP server
-        server = smtplib.SMTP(smtp_server, port, timeout=5)
+        server = smtplib.SMTP(smtp_server, port, timeout=4)
         server.helo()
-        server.mail("test_checker@gmail.com")
+        server.mail("premium_checker@gmail.com")
         code, message = server.rcpt(email)
         server.quit()
 
         if code == 250:
-            return "Active"
-        else:
+            return "Active/Exist"
+        elif code == 550:
             return "Does Not Exist"
-    except Exception as e:
-        return "Connection Timeout/Error"
-
-# --- UI Design ---
-st.title("📧 Gmail Account Checker")
-st.markdown("### Streamlit Light active validation system")
-st.write("Apnar Gmail account check korar jonno single email athoba bulk TXT file use korun.")
-
-# Navigation Sidebar
-st.sidebar.header("⚙️ Control Panel")
-mode = st.sidebar.radio("Checker Mode Select Karun:", ["Single Email Check", "Bulk Email (File Upload)"])
-
-# --- MODE 1: Single Email Check ---
-if mode == "Single Email Check":
-    st.subheader("🔍 Single Email Validator")
-    email_input = st.text_input("Gmail address-ti ekhane likhun:", placeholder="example@gmail.com")
-    
-    if st.button("Check Email", use_container_width=True):
-        if email_input.strip():
-            with st.spinner("Checking... Please wait..."):
-                status = check_gmail(email_input.strip())
-            
-            # Status anujayi visual alert block
-            if status == "Active":
-                st.success(f"✅ **{email_input}** - Ai Gmail-ti fully Active ar active ache!")
-            elif status == "Does Not Exist":
-                st.error(f"❌ **{email_input}** - Ai Gmail-ti active nai ba exists kore na!")
-            elif status == "Invalid Format":
-                st.warning(f"⚠️ **{email_input}** - Email formating thik nai! Gmail address obosshoi @gmail.com hote hobe.")
-            else:
-                st.info("ℹ️ Connection error! Google SMTP port blocks request sometimes. Retry koren.")
         else:
-            st.warning("Please enter a valid Gmail address.")
+            return "Blocked/Protected"
+    except Exception:
+        return "Connection Timeout"
 
-# --- MODE 2: Bulk Check (File Upload) ---
-elif mode == "Bulk Email (File Upload)":
-    st.subheader("📁 Bulk Gmail Validation (.txt)")
-    st.write("Ekhane apnar text file upload korun. Protiti line-e ekti kore email thaka lagbe.")
+# --- প্রিমিয়াম ইন্টারফেস ---
+st.title("🛡️ Premium Gmail Account Validator Pro")
+st.write("এটি একটি অ্যাডভান্সড বাল্ক ইমেইল চেকিং সিস্টেম যা গুগলের SMTP সার্ভারের সাথে সরাসরি যোগাযোগ করে অ্যাকাউন্ট ভ্যালিডেশন করে।")
+
+# সাইডবার কন্ট্রোল প্যানেল
+st.sidebar.header("⚙️ Settings Panel")
+mode = st.sidebar.radio("সিলেক্ট করুন:", ["Bulk Email (File Upload)", "Single Email Check"])
+
+# স্প্যাম বা আইপি ব্লক এড়ানোর জন্য ডিলে টাইম (Premium Feature)
+delay_time = st.sidebar.slider("Delay between requests (Seconds):", 0.1, 3.0, 0.5, step=0.1)
+st.sidebar.caption("💡 টিপস: ১ সেকেন্ড বা তার বেশি ডিলে রাখলে গুগলের আইপি ব্লক করার রিস্ক থাকে না।")
+
+# --- মোড ১: বাল্ক চেকিং (Default Main Feature) ---
+if mode == "Bulk Email (File Upload)":
+    st.subheader("📁 বাল্ক জিমেইল পরীক্ষা ও ফিল্টারিং")
     
-    uploaded_file = st.file_uploader("Upload TXT File", type=["txt"])
+    uploaded_file = st.file_uploader("আপনার .txt ফাইলটি এখানে আপলোড করুন", type=["txt"])
     
     if uploaded_file is not None:
-        # Decoded bytes to text string formatting
-        emails = [line.decode("utf-8").strip() for line in uploaded_file if line.strip()]
+        # ফাইল থেকে ইমেইল রিড করা এবং ফাকা লাইন বাদ দেওয়া
+        raw_emails = [line.decode("utf-8").strip() for line in uploaded_file if line.strip()]
         
-        if len(emails) > 0:
-            st.info(f"Total {len(emails)} emails found in this file.")
+        # ডুপ্লিকেট ইমেইল রিমুভ করা (Premium Feature)
+        unique_emails = list(dict.fromkeys(raw_emails))
+        duplicate_count = len(raw_emails) - len(unique_emails)
+        
+        if duplicate_count > 0:
+            st.warning(f"🔄 মোট {duplicate_count}টি ডুপ্লিকেট ইমেইল স্বয়ংক্রিয়ভাবে বাদ দেওয়া হয়েছে।")
             
-            if st.button("Start Bulk Checking", use_container_width=True):
+        if len(unique_emails) > 0:
+            st.info(f"📋 যাচাই করার জন্য মোট ইউনিক ইমেইল পাওয়া গেছে: {len(unique_emails)}টি।")
+            
+            # Start Bulk Checking Button
+            if st.button("🚀 Start Bulk Checking", use_container_width=True):
+                
+                # প্রগ্রেস বার ও লাইভ কাউন্টার
                 progress_bar = st.progress(0)
                 status_text = st.empty()
+                
+                # লাইভ ডাটা দেখানোর জন্য খালি কন্টেইনার
+                table_placeholder = st.empty()
                 
                 results = []
                 active_list = []
                 inactive_list = []
+                invalid_list = []
                 
-                for idx, email in enumerate(emails):
+                # চেকিং লুপ শুরু
+                for idx, email in enumerate(unique_emails):
                     status = check_gmail(email)
                     results.append({"Email": email, "Status": status})
                     
-                    if status == "Active":
+                    if status == "Active/Exist":
                         active_list.append(email)
-                    else:
+                    elif status == "Does Not Exist":
                         inactive_list.append(email)
-                    
-                    # Progress state updates
-                    progress = (idx + 1) / len(emails)
+                    else:
+                        invalid_list.append(email)
+                        
+                    # লাইভ প্রগ্রেস আপডেট
+                    progress = (idx + 1) / len(unique_emails)
                     progress_bar.progress(progress)
-                    status_text.text(f"Processed: {idx+1}/{len(emails)}")
+                    status_text.markdown(f"**চেক করা হচ্ছে:** `{idx+1}/{len(unique_emails)}` | **চলতি ইমেইল:** `{email}` -> *{status}*")
+                    
+                    # প্রগতিশীল টেবিল আপডেট
+                    df_live = pd.DataFrame(results)
+                    table_placeholder.dataframe(df_live, use_container_width=True, height=250)
+                    
+                    # প্রিমিয়াম সেফটি ডিলে
+                    time.sleep(delay_time)
                 
-                # Table reporting output
-                df = pd.DataFrame(results)
-                st.write("### Validation Result Table:")
-                st.dataframe(df, use_container_width=True)
+                status_text.success("🎉 চেকিং সফলভাবে সম্পন্ন হয়েছে!")
                 
-                # Overview Cards
-                col1, col2 = st.columns(2)
-                col1.metric("Active Emails ✅", len(active_list))
-                col2.metric("Inactive/Error ❌", len(inactive_list))
+                # ড্যাশবোর্ড স্ট্যাটাস কার্ডস
+                st.write("### 📊 সামগ্রিক রিপোর্ট (Summary Report)")
+                c1, c2, c3 = st.columns(3)
+                c1.metric("সক্রিয় জিমেইল (Active)", f"{len(active_list)}টি")
+                c2.metric("অস্তিত্বহীন (Does Not Exist)", f"{len(inactive_list)}টি")
+                c3.metric("ভুল ফরম্যাট/ব্লকড", f"{len(invalid_list)}টি")
                 
-                # Active email download block
+                # ডাউনলোড সেকশন (Premium multi-button layout)
+                st.write("### 📥 ডেটা ডাউনলোড করুন")
+                dl1, dl2 = st.columns(2)
+                
                 if active_list:
                     active_txt = "\n".join(active_list)
-                    st.download_button(
-                        label="📥 Download Active Emails Only",
+                    dl1.download_button(
+                        label="📥 ডাউনলোড করুন সক্রিয় ইমেইল (.txt)",
                         data=active_txt,
-                        file_name="verified_active_emails.txt",
-                        mime="text/plain"
+                        file_name="active_gmails.txt",
+                        mime="text/plain",
+                        key="dl_act"
+                    )
+                
+                if inactive_list:
+                    inactive_txt = "\n".join(inactive_list)
+                    dl2.download_button(
+                        label="📥 ডাউনলোড করুন নিষ্ক্রিয় ইমেইল (.txt)",
+                        data=inactive_txt,
+                        file_name="inactive_gmails.txt",
+                        mime="text/plain",
+                        key="dl_inact"
                     )
         else:
-            st.error("Uploaded file is empty. Please verify your data inside .txt file.")
+            st.error("ফাইলটির ভেতরে কোনো ইমেইল পাওয়া যায়নি!")
 
+# --- মোড ২: সিঙ্গেল ইমেইল চেক ---
+elif mode == "Single Email Check":
+    st.subheader("🔍 একক জিমেইল ভ্যালিডেটর")
+    single_email = st.text_input("একটি জিমেইল অ্যাড্রেস লিখুন:", placeholder="username@gmail.com")
+    
+    if st.button("Check Single Email", use_container_width=True):
+        if single_email.strip():
+            with st.spinner("সার্ভারের সাথে কানেক্ট করা হচ্ছে..."):
+                status = check_gmail(single_email.strip())
+                
+            if status == "Active/Exist":
+                st.success(f"✅ **{single_email}** - এই জিমেইল অ্যাকাউন্টটি সক্রিয় এবং ব্যবহারযোগ্য।")
+            elif status == "Does Not Exist":
+                st.error(f"❌ **{single_email}** - এই জিমেইলটির কোনো অস্তিত্ব নেই বা ডিলিট করা হয়েছে।")
+            elif status == "Invalid Format":
+                st.warning(f"⚠️ **{single_email}** - ইমেইলের ফরম্যাট সঠিক নয়। শেষে অবশ্যই @gmail.com থাকতে হবে।")
+            else:
+                st.info(f"ℹ️ রেসপন্স: {status}. গুগল সার্ভার থেকে সাময়িক বাধা দিচ্ছে। একটু পর ট্রাই করুন।")
+        else:
+            st.warning("অনুগ্রহ করে একটি ইমেইল ইনপুট দিন।")
+
+# ফুটার
 st.markdown("---")
-st.markdown("<p style='text-align: center; color: gray;'>Powered by GitHub & Streamlit Community Cloud</p>", unsafe_allow_html=True)
+st.markdown("<p style='text-align: center; color: gray;'>Premium Real-time Validation Engine powered by Python & Streamlit</p>", unsafe_allow_html=True)
