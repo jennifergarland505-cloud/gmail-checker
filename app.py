@@ -3,6 +3,7 @@ import smtplib
 import re
 import pandas as pd
 import time
+from PIL import Image
 
 st.set_page_config(
     page_title="Shakibul Hasan's GmailCheck.com - Premium Google Account Checker",
@@ -94,6 +95,12 @@ st.markdown("""
 
 with st.sidebar:
     st.markdown("<h2 style='color: black !important; text-align: center;'>⚡ Shakibul Hasan (CSE)</h2>", unsafe_allow_html=True)
+    
+    uploaded_file = st.file_uploader("Upload Profile Image", type=["jpg", "jpeg", "png"], label_visibility="collapsed")
+    if uploaded_file is not None:
+        image = Image.open(uploaded_file)
+        st.image(image, use_container_width=True)
+    
     st.markdown("---")
     menu = st.sidebar.radio(
         "Menu",
