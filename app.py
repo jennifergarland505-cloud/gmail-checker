@@ -135,7 +135,7 @@ with st.sidebar:
 if menu == "🔍 Google Check":
     st.markdown("""
         <div class="header-container">
-            <h1 style='margin:0; font-size:32px;'>📧 Google Account Checker & Validator</h1>
+            <h1 style='margin:0; font-size:32px;'>📧 shakib gmail cheker</h1>
             <p style='margin:5px 0 0 0; opacity:0.9;'>Secure, Fast and Direct Server-Based Bulk Gmail Validation Engine</p>
         </div>
     """, unsafe_allow_html=True)
