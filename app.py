@@ -4,7 +4,6 @@ import re
 import pandas as pd
 import time
 
-# Page Configuration
 st.set_page_config(
     page_title="GmailCheck.com - Premium Google Account Checker",
     page_icon="⚡",
@@ -12,12 +11,10 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Email format check functions
 def is_valid_email_format(email):
     pattern = r'^[a-zA-Z0-9_.+-]+@gmail\.com$'
     return re.match(pattern, email) is not None
 
-# Direct Google SMTP verification logic
 def check_gmail(email):
     if not is_valid_email_format(email):
         return "Not exists"
@@ -40,13 +37,10 @@ def check_gmail(email):
     except Exception:
         return "Verified"
 
-# --- সুপার রঙিন কাস্টম সিএসএস (Colorful Custom CSS) ---
 st.markdown("""
     <style>
-    /* মেইন ব্যাকগ্রাউন্ড */
     .stApp { background-color: #f3f4f6; }
     
-    /* হেডার ও গ্রেডিয়েন্ট টাইটেল */
     .header-container {
         background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
         padding: 20px;
@@ -57,12 +51,10 @@ st.markdown("""
         margin-bottom: 25px;
     }
     
-    /* সাইডবার কালার স্কিম */
     div[data-testid="stSidebar"] { background-color: #0f172a; }
     div[data-testid="stSidebar"] * { color: #cbd5e1 !important; }
     div[data-testid="stSidebar"] .st-emotion-cache-16tx1j3 { background-color: #1e293b; color: white !important; }
 
-    /* ৪টি রঙিন স্ট্যাটাস ট্যাবের জন্য CSS */
     .tab-btn {
         text-align: center;
         padding: 14px;
@@ -72,12 +64,11 @@ st.markdown("""
         color: white;
         box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
-    .btn-good { background-color: #10b981; border: 2px solid #047857; }         /* Green */
-    .btn-verified { background-color: #3b82f6; border: 2px solid #1d4ed8; }     /* Blue */
-    .btn-notexists { background-color: #ef4444; border: 2px solid #b91c1c; }    /* Red */
-    .btn-remaining { background-color: #f59e0b; border: 2px solid #b45309; }    /* Yellow/Orange */
+    .btn-good { background-color: #10b981; border: 2px solid #047857; }
+    .btn-verified { background-color: #3b82f6; border: 2px solid #1d4ed8; }
+    .btn-notexists { background-color: #ef4444; border: 2px solid #b91c1c; }
+    .btn-remaining { background-color: #f59e0b; border: 2px solid #b45309; }
 
-    /* ৪টি রঙিন রেজাল্ট বক্সের CSS */
     .result-box {
         min-height: 280px;
         max-height: 280px;
@@ -94,7 +85,6 @@ st.markdown("""
     .box-notexists { background-color: #fef2f2; color: #991b1b; border: 2px solid #fecaca; }
     .box-remaining { background-color: #fffbeb; color: #92400e; border: 2px solid #fde68a; }
 
-    /* কাস্টম বাটন স্টাইল */
     div.stButton > button {
         border-radius: 6px;
         font-weight: bold;
@@ -102,7 +92,6 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# --- Sidebar Menu Navigation ---
 with st.sidebar:
     st.markdown("<h2 style='color: white; text-align: center;'>⚡ GmailCheck Pro</h2>", unsafe_allow_html=True)
     st.markdown("---")
@@ -112,18 +101,14 @@ with st.sidebar:
         label_visibility="collapsed"
     )
 
-# --- Main Feature Panel ---
 if menu == "🔍 Google Check":
-    
-    # Gradient Banner
     st.markdown("""
         <div class="header-container">
             <h1 style='margin:0; font-size:32px;'>📧 Google Account Checker & Validator</h1>
-            <p style='margin:5px 0 0 0; opacity:0.9;'>নিরাপদ, দ্রুত এবং সরাসরি সার্ভার ভিত্তিক বাল্ক জিমেইল ভ্যালিডেটর</p>
+            <p style='margin:5px 0 0 0; opacity:0.9;'>Secure, Fast and Direct Server-Based Bulk Gmail Validation Engine</p>
         </div>
     """, unsafe_allow_html=True)
 
-    # Session States
     if "input_emails" not in st.session_state:
         st.session_state.input_emails = ""
     if "good_list" not in st.session_state:
@@ -139,13 +124,12 @@ if menu == "🔍 Google Check":
 
     col_left, col_right = st.columns([1.1, 1], gap="large")
     
-    # Left Column: Inputs and Options
     with col_left:
-        st.markdown("<h4 style='color: #1e293b; margin-bottom: 5px;'>📥 অ্যাকাউন্ট তালিকা (এখানে ইমেইলগুলো পেস্ট করুন):</h4>", unsafe_allow_html=True)
+        st.markdown("<h4 style='color: #1e293b; margin-bottom: 5px;'>📥 Account List (Paste your emails here):</h4>", unsafe_allow_html=True)
         input_text = st.text_area(
             "Input Area",
             value=st.session_state.input_emails,
-            placeholder="hfgjdgxg318@gmail.com\nfhghhfxhuf@gmail.com\ng94769251@gmail.com",
+            placeholder="example1@gmail.com\nexample2@gmail.com\nexample3@gmail.com",
             height=260,
             label_visibility="collapsed"
         )
@@ -158,10 +142,9 @@ if menu == "🔍 Google Check":
         st.markdown("**Type Mode:**")
         type_mode = st.radio("Type Mode Options", ["Personal Account Mode", "Enterprise/Personal Compatibility Mode"], label_visibility="collapsed")
         
-        st.markdown("**Route:** <span style='background-color:#ffe4e6; color:#9f1239; padding:2px 8px; font-size:12px; border-radius:4px; font-weight:bold;'>VIP3 supports 300 queries per time, with continuous speed improvement</span>", unsafe_allow_html=True)
+        st.markdown("**Route:** <span style='background-color:#ffe4e6; color:#9f1239; padding:2px 8px; font-size:12px; border-radius:4px; font-weight:bold;'>VIP3 supports 300 queries per session, with optimized speed performance</span>", unsafe_allow_html=True)
         route_mode = st.radio("Route Options", ["Free Route", "VIP1 Route", "VIP2 Route", "VIP3 Route"], horizontal=True, label_visibility="collapsed")
         
-        # Switches
         col_sw1, col_sw2, col_sw3 = st.columns(3)
         with col_sw1:
             repeat_detection = st.toggle("Repeat Detection", value=True)
@@ -185,26 +168,21 @@ if menu == "🔍 Google Check":
             st.session_state.remaining_count = 0
             st.rerun()
 
-    # Right Column: Live Output (Beautifully Colored)
     with col_right:
         progress_bar = st.progress(0)
         
-        # ৪টি কলাম তৈরি
         h_col1, h_col2, h_col3, h_col4 = st.columns(4)
         
-        # কন্টেইনার প্লেসহোল্ডার
         tab_good_placeholder = h_col1.empty()
         tab_verified_placeholder = h_col2.empty()
         tab_not_exist_placeholder = h_col3.empty()
         tab_remaining_placeholder = h_col4.empty()
         
-        # রেজাল্ট টেক্সট কন্টেইনার প্লেসহোল্ডার
         box_good = st.empty()
         box_verified = st.empty()
         box_not_exist = st.empty()
         box_remaining = st.empty()
 
-        # ইনিশিয়াল সুন্দর রঙিন রেন্ডারিং
         tab_good_placeholder.markdown(f'<div class="tab-btn btn-good">Good ({len(st.session_state.good_list)})</div>', unsafe_allow_html=True)
         tab_verified_placeholder.markdown(f'<div class="tab-btn btn-verified">Verified ({len(st.session_state.verified_list)})</div>', unsafe_allow_html=True)
         tab_not_exist_placeholder.markdown(f'<div class="tab-btn btn-notexists">Not exist ({len(st.session_state.not_exist_list)})</div>', unsafe_allow_html=True)
@@ -217,7 +195,6 @@ if menu == "🔍 Google Check":
         init_rem_text = "<br>".join(parsed_initial_emails) if st.session_state.remaining_count == len(parsed_initial_emails) else "<br>".join(st.session_state.remaining_list)
         box_remaining.markdown(f'<div class="result-box box-remaining">{init_rem_text}</div>', unsafe_allow_html=True)
 
-        # "Start Check" অ্যাকশন লুপ
         if start_check and input_text.strip():
             emails_to_validate = [line.strip() for line in input_text.split("\n") if line.strip()]
             
@@ -246,10 +223,8 @@ if menu == "🔍 Google Check":
                 else:
                     st.session_state.verified_list.append(current_email)
                 
-                # প্রগ্রেস বার
                 progress_bar.progress((idx + 1) / total_count)
                 
-                # রিয়েলটাইমে একই জায়গায় রঙিন ভ্যালু পরিবর্তন হচ্ছে
                 tab_good_placeholder.markdown(f'<div class="tab-btn btn-good">Good ({len(st.session_state.good_list)})</div>', unsafe_allow_html=True)
                 tab_verified_placeholder.markdown(f'<div class="tab-btn btn-verified">Verified ({len(st.session_state.verified_list)})</div>', unsafe_allow_html=True)
                 tab_not_exist_placeholder.markdown(f'<div class="tab-btn btn-notexists">Not exist ({len(st.session_state.not_exist_list)})</div>', unsafe_allow_html=True)
@@ -260,11 +235,10 @@ if menu == "🔍 Google Check":
                 box_not_exist.markdown(f'<div class="result-box box-notexists">{"<br>".join(st.session_state.not_exist_list)}</div>', unsafe_allow_html=True)
                 box_remaining.markdown(f'<div class="result-box box-remaining">{"<br>".join(st.session_state.remaining_list)}</div>', unsafe_allow_html=True)
                 
-                time.sleep(0.1) # লাইভ স্পিড
+                time.sleep(0.1)
                 
             st.success("Verification Completed successfully!")
 
-        # নীচের ৪টি কাস্টম রঙিন ডাউনলোড বাটন
         st.markdown("<br>", unsafe_allow_html=True)
         act_col1, act_col2, act_col3, act_col4 = st.columns(4)
         
