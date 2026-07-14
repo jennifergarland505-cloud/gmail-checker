@@ -3,19 +3,19 @@ import smtplib
 import re
 import pandas as pd
 
-# পেজ সেটআপ (ব্রাউজার ট্যাবের নাম ও আইকন)
+# Page setup ar title config
 st.set_page_config(
-    page_title="Gmail Checker - Accounts Validator",
+    page_title="Gmail Account Checker",
     page_icon="📧",
     layout="centered"
 )
 
-# জিমেইল ফরম্যাট ভ্যালিডেশনের জন্য Regex ফাংশন
+# Email format check korar regex function
 def is_valid_email_format(email):
     pattern = r'^[a-zA-Z0-9_.+-]+@gmail\.com$'
     return re.match(pattern, email) is not None
 
-# SMTP দিয়ে জিমেইল চেক করার ফাংশন
+# SMTP diye Gmail active kina check korar main core function
 def check_gmail(email):
     if not is_valid_email_format(email):
         return "Invalid Format"
@@ -24,8 +24,8 @@ def check_gmail(email):
     port = 25
 
     try:
-        # জিমেইলের SMTP সার্ভারে কানেক্ট করা
-        server = smtplib.SMTP(smtp_server, port, timeout=6)
+        # Connecting to Google's SMTP server
+        server = smtplib.SMTP(smtp_server, port, timeout=5)
         server.helo()
         server.mail("test_checker@gmail.com")
         code, message = server.rcpt(email)
@@ -36,54 +36,54 @@ def check_gmail(email):
         else:
             return "Does Not Exist"
     except Exception as e:
-        return "Connection Error"
+        return "Connection Timeout/Error"
 
-# --- ইন্টারফেস ডিজাইন শুরু ---
+# --- UI Design ---
 st.title("📧 Gmail Account Checker")
-st.write("এটি একটি সম্পূর্ণ ফ্রি এবং নিরাপদ জিমেইল ভ্যালিডেটর। কোনো পাসওয়ার্ড ছাড়াই জিমেইল চেক করুন।")
+st.markdown("### Streamlit Light active validation system")
+st.write("Apnar Gmail account check korar jonno single email athoba bulk TXT file use korun.")
 
-# সাইডবার অপশন
-st.sidebar.header("⚙️ কন্ট্রোল প্যানেল")
-mode = st.sidebar.radio("চেক করার মোড নির্বাচন করুন:", ["সিঙ্গেল ইমেইল চেক", "বাল্ক (ফাইল আপলোড) চেক"])
+# Navigation Sidebar
+st.sidebar.header("⚙️ Control Panel")
+mode = st.sidebar.radio("Checker Mode Select Karun:", ["Single Email Check", "Bulk Email (File Upload)"])
 
-# --- মোড ১: সিঙ্গেল ইমেইল চেক ---
-if mode == "সিঙ্গেল ইমেইল চেক":
-    st.subheader("🔍 একক জিমেইল পরীক্ষা")
-    single_email = st.text_input("আপনার জিমেইল অ্যাড্রেসটি লিখুন:", placeholder="example@gmail.com")
+# --- MODE 1: Single Email Check ---
+if mode == "Single Email Check":
+    st.subheader("🔍 Single Email Validator")
+    email_input = st.text_input("Gmail address-ti ekhane likhun:", placeholder="example@gmail.com")
     
-    if st.button("পরীক্ষা করুন", use_container_width=True):
-        if single_email.strip():
-            with st.spinner("চেক করা হচ্ছে..."):
-                status = check_gmail(single_email.strip())
+    if st.button("Check Email", use_container_width=True):
+        if email_input.strip():
+            with st.spinner("Checking... Please wait..."):
+                status = check_gmail(email_input.strip())
             
-            # ফলাফলের ওপর ভিত্তি করে অ্যালার্ট বা বক্স দেখানো
+            # Status anujayi visual alert block
             if status == "Active":
-                st.success(f"✅ **{single_email}** - এই জিমেইলটি সক্রিয় এবং বিদ্যমান!")
+                st.success(f"✅ **{email_input}** - Ai Gmail-ti fully Active ar active ache!")
             elif status == "Does Not Exist":
-                st.error(f"❌ **{single_email}** - এই জিমেইলটির কোনো অস্তিত্ব নেই!")
+                st.error(f"❌ **{email_input}** - Ai Gmail-ti active nai ba exists kore na!")
             elif status == "Invalid Format":
-                st.warning(f"⚠️ **{single_email}** - ইমেইলটির ফরম্যাট সঠিক নয়! (অবশ্যই @gmail.com হতে হবে)")
+                st.warning(f"⚠️ **{email_input}** - Email formating thik nai! Gmail address obosshoi @gmail.com hote hobe.")
             else:
-                st.info(f"ℹ️ দুঃখিত, সংযোগের সমস্যার কারণে চেক করা যায়নি। পুনরায় চেষ্টা করুন।")
+                st.info("ℹ️ Connection error! Google SMTP port blocks request sometimes. Retry koren.")
         else:
-            st.warning("অনুগ্রহ করে একটি ইমেইল লিখুন!")
+            st.warning("Please enter a valid Gmail address.")
 
-# --- মোড ২: বাল্ক (ফাইল আপলোড) চেক ---
-elif mode == "বাল্ক (ফাইল আপলোড) চেক":
-    st.subheader("📁 ফাইল থেকে বাল্ক জিমেইল পরীক্ষা")
-    st.write("নিচে একটি `.txt` ফাইল আপলোড করুন যেখানে প্রতি লাইনে একটি করে ইমেইল রয়েছে।")
+# --- MODE 2: Bulk Check (File Upload) ---
+elif mode == "Bulk Email (File Upload)":
+    st.subheader("📁 Bulk Gmail Validation (.txt)")
+    st.write("Ekhane apnar text file upload korun. Protiti line-e ekti kore email thaka lagbe.")
     
-    uploaded_file = st.file_uploader("TXT ফাইল আপলোড করুন", type=["txt"])
+    uploaded_file = st.file_uploader("Upload TXT File", type=["txt"])
     
     if uploaded_file is not None:
-        # ফাইল রিড করা
+        # Decoded bytes to text string formatting
         emails = [line.decode("utf-8").strip() for line in uploaded_file if line.strip()]
         
         if len(emails) > 0:
-            st.info(f"মোট {len(emails)}টি ইমেইল পাওয়া গেছে।")
+            st.info(f"Total {len(emails)} emails found in this file.")
             
-            if st.button("চেকিং শুরু করুন", use_container_width=True):
-                # প্রগ্রেস বার সেটআপ
+            if st.button("Start Bulk Checking", use_container_width=True):
                 progress_bar = st.progress(0)
                 status_text = st.empty()
                 
@@ -91,7 +91,6 @@ elif mode == "বাল্ক (ফাইল আপলোড) চেক":
                 active_list = []
                 inactive_list = []
                 
-                # লুপ চালিয়ে প্রতিটি ইমেইল চেক করা
                 for idx, email in enumerate(emails):
                     status = check_gmail(email)
                     results.append({"Email": email, "Status": status})
@@ -101,33 +100,32 @@ elif mode == "বাল্ক (ফাইল আপলোড) চেক":
                     else:
                         inactive_list.append(email)
                     
-                    # প্রগ্রেস আপডেট
+                    # Progress state updates
                     progress = (idx + 1) / len(emails)
                     progress_bar.progress(progress)
-                    status_text.text(f"চেক হচ্ছে: {idx+1}/{len(emails)}")
+                    status_text.text(f"Processed: {idx+1}/{len(emails)}")
                 
-                # সম্পূর্ণ ফলাফল টেবিলে দেখানো
+                # Table reporting output
                 df = pd.DataFrame(results)
-                st.write("### ফলাফল তালিকা:")
+                st.write("### Validation Result Table:")
                 st.dataframe(df, use_container_width=True)
                 
-                # ড্যাশবোর্ড স্ট্যাটাস কার্ড
+                # Overview Cards
                 col1, col2 = st.columns(2)
-                col1.metric("সক্রিয় জিমেইল (Active)", len(active_list))
-                col2.metric("নিষ্ক্রিয়/ভুল (Inactive/Invalid)", len(inactive_list))
+                col1.metric("Active Emails ✅", len(active_list))
+                col2.metric("Inactive/Error ❌", len(inactive_list))
                 
-                # ডাউনলোড অপশন (সক্রিয় ইমেইলগুলোর জন্য)
+                # Active email download block
                 if active_list:
-                    active_text = "\n".join(active_list)
+                    active_txt = "\n".join(active_list)
                     st.download_button(
-                        label="📥 সক্রিয় জিমেইলগুলোর তালিকা ডাউনলোড করুন (.txt)",
-                        data=active_text,
-                        file_name="active_emails.txt",
+                        label="📥 Download Active Emails Only",
+                        data=active_txt,
+                        file_name="verified_active_emails.txt",
                         mime="text/plain"
                     )
         else:
-            st.error("ফাইলটি খালি! অনুগ্রহ করে ইমেইল সম্বলিত ফাইল আপলোড করুন।")
+            st.error("Uploaded file is empty. Please verify your data inside .txt file.")
 
-# ফুটার
 st.markdown("---")
-st.markdown("<p style='text-align: center; color: gray;'>Powered by Streamlit & Python SMTP</p>", unsafe_allow_html=True)
+st.markdown("<p style='text-align: center; color: gray;'>Powered by GitHub & Streamlit Community Cloud</p>", unsafe_allow_html=True)
