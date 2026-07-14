@@ -36,11 +36,11 @@ def check_gmail(email):
         elif code == 550:
             return "Not exists"
         else:
-            return "Verified" # Managed for different server responses
+            return "Verified" 
     except Exception:
         return "Verified"
 
-# Custom CSS styling matching the layout exactly
+# Custom CSS styling
 st.markdown("""
     <style>
     .stApp { background-color: #f8f9fa; }
@@ -65,7 +65,7 @@ with st.sidebar:
 # --- Main Feature Panel ---
 if menu == "🔍 Google Check":
     
-    # Session States initialization for inputs and outputs
+    # Session States
     if "input_emails" not in st.session_state:
         st.session_state.input_emails = ""
     if "good_list" not in st.session_state:
@@ -83,7 +83,6 @@ if menu == "🔍 Google Check":
     
     # Left Column: Inputs and Options
     with col_left:
-        # Email Input Text Area
         input_text = st.text_area(
             "Input Area",
             value=st.session_state.input_emails,
@@ -93,7 +92,6 @@ if menu == "🔍 Google Check":
         )
         st.session_state.input_emails = input_text
         
-        # Parse initial length for remaining setup dynamically
         parsed_initial_emails = [line.strip() for line in input_text.split("\n") if line.strip()]
         if not st.session_state.good_list and not st.session_state.not_exist_list and not st.session_state.verified_list:
             st.session_state.remaining_count = len(parsed_initial_emails)
@@ -104,14 +102,12 @@ if menu == "🔍 Google Check":
         st.markdown("**Route:** <span style='background-color:#eaeaea; padding:2px 5px; font-size:12px;'>VIP3 supports 300 queries per time, with continuous speed improvement</span>", unsafe_allow_html=True)
         route_mode = st.radio("Route Options", ["Free Route", "VIP1 Route", "VIP2 Route", "VIP3 Route"], horizontal=True, label_visibility="collapsed")
         
-        # Switches/Toggles
         repeat_detection = st.toggle("Repeat Detection", value=True)
         ignore_format = st.toggle("Ignore email format errors", value=False)
         check_exists = st.toggle("Check if exists(Slow query)", value=True)
         
-        # Action Buttons Layout
         st.markdown("<br>", unsafe_allow_html=True)
-        btn_col1, btn_col2, dummy_col = st.columns([1, 1, 2])
+        btn_col1, btn_col2 = st.columns([1, 1])
         
         start_check = btn_col1.button("Start Check", type="primary", use_container_width=True)
         clear_data = btn_col2.button("Clear Data", use_container_width=True)
@@ -125,27 +121,31 @@ if menu == "🔍 Google Check":
             st.session_state.remaining_count = 0
             st.rerun()
 
-    # Right Column: Live Multi-Tab Output Status Boxes
+    # Right Column: Live Output (Fixed in-place update)
     with col_right:
-        # Live Progress Tracker Bar
         progress_bar = st.progress(0)
         
-        # 4 Status Counters Header Row
+        # ১. কলামগুলো একবারই তৈরি করা হচ্ছে
         h_col1, h_col2, h_col3, h_col4 = st.columns(4)
         
-        # Result content placeholders
+        # ২. স্ট্যাটাস ট্যাক্স আপডেট করার জন্য .empty() প্লেসহোল্ডার তৈরি করা হলো
+        tab_good_placeholder = h_col1.empty()
+        tab_verified_placeholder = h_col2.empty()
+        tab_not_exist_placeholder = h_col3.empty()
+        tab_remaining_placeholder = h_col4.empty()
+        
+        # ৩. রেজাল্ট বক্সের জন্য .empty() প্লেসহোল্ডার
         box_good = st.empty()
         box_verified = st.empty()
         box_not_exist = st.empty()
         box_remaining = st.empty()
 
-        # Update Counters dynamic header rendering
-        h_col1.markdown(f'<div class="status-tab status-active">Good({len(st.session_state.good_list)})</div>', unsafe_allow_html=True)
-        h_col2.markdown(f'<div class="status-tab">Verified({len(st.session_state.verified_list)})</div>', unsafe_allow_html=True)
-        h_col3.markdown(f'<div class="status-tab">Not exists({len(st.session_state.not_exist_list)})</div>', unsafe_allow_html=True)
-        h_col4.markdown(f'<div class="status-tab">Remaining({st.session_state.remaining_count})</div>', unsafe_allow_html=True)
+        # প্রাথমিক স্টেজ রেন্ডারিং (অতিরিক্ত কপি তৈরি প্রতিরোধে .empty() ব্যবহার)
+        tab_good_placeholder.markdown(f'<div class="status-tab status-active">Good({len(st.session_state.good_list)})</div>', unsafe_allow_html=True)
+        tab_verified_placeholder.markdown(f'<div class="status-tab">Verified({len(st.session_state.verified_list)})</div>', unsafe_allow_html=True)
+        tab_not_exist_placeholder.markdown(f'<div class="status-tab">Not exists({len(st.session_state.not_exist_list)})</div>', unsafe_allow_html=True)
+        tab_remaining_placeholder.markdown(f'<div class="status-tab">Remaining({st.session_state.remaining_count})</div>', unsafe_allow_html=True)
         
-        # Update Content containers inside layout box CSS structures
         box_good.markdown(f'<div class="result-box">{"<br>".join(st.session_state.good_list)}</div>', unsafe_allow_html=True)
         box_verified.markdown(f'<div class="result-box">{"<br>".join(st.session_state.verified_list)}</div>', unsafe_allow_html=True)
         box_not_exist.markdown(f'<div class="result-box">{"<br>".join(st.session_state.not_exist_list)}</div>', unsafe_allow_html=True)
@@ -153,7 +153,7 @@ if menu == "🔍 Google Check":
         init_rem_text = "<br>".join(parsed_initial_emails) if st.session_state.remaining_count == len(parsed_initial_emails) else "<br>".join(st.session_state.remaining_list)
         box_remaining.markdown(f'<div class="result-box">{init_rem_text}</div>', unsafe_allow_html=True)
 
-        # Triggering operational loops when hitting "Start Check"
+        # "Start Check" এ ক্লিক করার পর লুপ অ্যাকশন
         if start_check and input_text.strip():
             emails_to_validate = [line.strip() for line in input_text.split("\n") if line.strip()]
             
@@ -169,7 +169,6 @@ if menu == "🔍 Google Check":
             st.session_state.remaining_count = total_count
             
             for idx, current_email in enumerate(emails_to_validate):
-                # Validation Process execution
                 res_status = check_gmail(current_email)
                 
                 if current_email in st.session_state.remaining_list:
@@ -183,24 +182,25 @@ if menu == "🔍 Google Check":
                 else:
                     st.session_state.verified_list.append(current_email)
                 
-                # Update progress tracking items live UI
+                # প্রগ্রেস বার
                 progress_bar.progress((idx + 1) / total_count)
                 
-                h_col1.markdown(f'<div class="status-tab status-active">Good({len(st.session_state.good_list)})</div>', unsafe_allow_html=True)
-                h_col2.markdown(f'<div class="status-tab">Verified({len(st.session_state.verified_list)})</div>', unsafe_allow_html=True)
-                h_col3.markdown(f'<div class="status-tab">Not exists({len(st.session_state.not_exist_list)})</div>', unsafe_allow_html=True)
-                h_col4.markdown(f'<div class="status-tab">Remaining({st.session_state.remaining_count})</div>', unsafe_allow_html=True)
+                # নতুন বাটন বা বক্স তৈরি না করে শুধুমাত্র প্লেসহোল্ডারের ভেতরের ভ্যালু আপডেট করা হচ্ছে
+                tab_good_placeholder.markdown(f'<div class="status-tab status-active">Good({len(st.session_state.good_list)})</div>', unsafe_allow_html=True)
+                tab_verified_placeholder.markdown(f'<div class="status-tab">Verified({len(st.session_state.verified_list)})</div>', unsafe_allow_html=True)
+                tab_not_exist_placeholder.markdown(f'<div class="status-tab">Not exists({len(st.session_state.not_exist_list)})</div>', unsafe_allow_html=True)
+                tab_remaining_placeholder.markdown(f'<div class="status-tab">Remaining({st.session_state.remaining_count})</div>', unsafe_allow_html=True)
                 
                 box_good.markdown(f'<div class="result-box">{"<br>".join(st.session_state.good_list)}</div>', unsafe_allow_html=True)
                 box_verified.markdown(f'<div class="result-box">{"<br>".join(st.session_state.verified_list)}</div>', unsafe_allow_html=True)
                 box_not_exist.markdown(f'<div class="result-box">{"<br>".join(st.session_state.not_exist_list)}</div>', unsafe_allow_html=True)
                 box_remaining.markdown(f'<div class="result-box">{"<br>".join(st.session_state.remaining_list)}</div>', unsafe_allow_html=True)
                 
-                time.sleep(0.2) # Operational safe rate delay
+                time.sleep(0.1) # নিরাপদ রেট লিমিট স্পিড
                 
             st.success("Verification Completed successfully!")
 
-        # Green, Pink, Grey, Yellow control buttons structure at bottom
+        # নিচের কপি বাটনগুলো
         st.markdown("<br>", unsafe_allow_html=True)
         act_col1, act_col2, act_col3, act_col4 = st.columns(4)
         
