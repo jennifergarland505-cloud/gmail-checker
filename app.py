@@ -6,8 +6,8 @@ import time
 
 # Page Configuration
 st.set_page_config(
-    page_title="GmailCheck.com - Google Account Checker",
-    page_icon="📧",
+    page_title="GmailCheck.com - Premium Google Account Checker",
+    page_icon="⚡",
     layout="wide",
     initial_sidebar_state="expanded"
 )
@@ -40,23 +40,73 @@ def check_gmail(email):
     except Exception:
         return "Verified"
 
-# Custom CSS styling
+# --- সুপার রঙিন কাস্টম সিএসএস (Colorful Custom CSS) ---
 st.markdown("""
     <style>
-    .stApp { background-color: #f8f9fa; }
-    .status-tab { text-align: center; padding: 12px; border: 1px solid #e2e8f0; background-color: #ffffff; border-radius: 4px; font-weight: bold; font-size: 14px; }
-    .status-active { background-color: #1a2332; color: white; border: 1px solid #1a2332; }
-    .result-box { min-height: 280px; border: 1px solid #cbd5e1; border-radius: 4px; padding: 10px; background-color: #ffffff; font-family: monospace; white-space: pre-wrap; max-height: 280px; overflow-y: auto; color: #334155; }
-    div[data-testid="stSidebar"] { background-color: #111c24; }
-    div[data-testid="stSidebar"] * { color: #94a3b8 !important; }
+    /* মেইন ব্যাকগ্রাউন্ড */
+    .stApp { background-color: #f3f4f6; }
+    
+    /* হেডার ও গ্রেডিয়েন্ট টাইটেল */
+    .header-container {
+        background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+        padding: 20px;
+        border-radius: 8px;
+        color: white;
+        text-align: center;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        margin-bottom: 25px;
+    }
+    
+    /* সাইডবার কালার স্কিম */
+    div[data-testid="stSidebar"] { background-color: #0f172a; }
+    div[data-testid="stSidebar"] * { color: #cbd5e1 !important; }
     div[data-testid="stSidebar"] .st-emotion-cache-16tx1j3 { background-color: #1e293b; color: white !important; }
+
+    /* ৪টি রঙিন স্ট্যাটাস ট্যাবের জন্য CSS */
+    .tab-btn {
+        text-align: center;
+        padding: 14px;
+        font-weight: bold;
+        font-size: 15px;
+        border-radius: 6px;
+        color: white;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .btn-good { background-color: #10b981; border: 2px solid #047857; }         /* Green */
+    .btn-verified { background-color: #3b82f6; border: 2px solid #1d4ed8; }     /* Blue */
+    .btn-notexists { background-color: #ef4444; border: 2px solid #b91c1c; }    /* Red */
+    .btn-remaining { background-color: #f59e0b; border: 2px solid #b45309; }    /* Yellow/Orange */
+
+    /* ৪টি রঙিন রেজাল্ট বক্সের CSS */
+    .result-box {
+        min-height: 280px;
+        max-height: 280px;
+        overflow-y: auto;
+        border-radius: 6px;
+        padding: 12px;
+        font-family: 'Courier New', Courier, monospace;
+        font-weight: bold;
+        white-space: pre-wrap;
+        box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+    }
+    .box-good { background-color: #ecfdf5; color: #065f46; border: 2px solid #a7f3d0; }
+    .box-verified { background-color: #eff6ff; color: #1e40af; border: 2px solid #bfdbfe; }
+    .box-notexists { background-color: #fef2f2; color: #991b1b; border: 2px solid #fecaca; }
+    .box-remaining { background-color: #fffbeb; color: #92400e; border: 2px solid #fde68a; }
+
+    /* কাস্টম বাটন স্টাইল */
+    div.stButton > button {
+        border-radius: 6px;
+        font-weight: bold;
+    }
     </style>
 """, unsafe_allow_html=True)
 
 # --- Sidebar Menu Navigation ---
 with st.sidebar:
-    st.markdown("<h2 style='color: white; margin-bottom: 20px;'>📧 GmailCheck.com</h2>", unsafe_allow_html=True)
-    menu = st.radio(
+    st.markdown("<h2 style='color: white; text-align: center;'>⚡ GmailCheck Pro</h2>", unsafe_allow_html=True)
+    st.markdown("---")
+    menu = st.sidebar.radio(
         "Menu",
         ["🔍 Google Check", "📊 Data Split and Merge", "🗑️ Remove Duplicates", "📞 Customer Support"],
         label_visibility="collapsed"
@@ -65,6 +115,14 @@ with st.sidebar:
 # --- Main Feature Panel ---
 if menu == "🔍 Google Check":
     
+    # Gradient Banner
+    st.markdown("""
+        <div class="header-container">
+            <h1 style='margin:0; font-size:32px;'>📧 Google Account Checker & Validator</h1>
+            <p style='margin:5px 0 0 0; opacity:0.9;'>নিরাপদ, দ্রুত এবং সরাসরি সার্ভার ভিত্তিক বাল্ক জিমেইল ভ্যালিডেটর</p>
+        </div>
+    """, unsafe_allow_html=True)
+
     # Session States
     if "input_emails" not in st.session_state:
         st.session_state.input_emails = ""
@@ -83,11 +141,12 @@ if menu == "🔍 Google Check":
     
     # Left Column: Inputs and Options
     with col_left:
+        st.markdown("<h4 style='color: #1e293b; margin-bottom: 5px;'>📥 অ্যাকাউন্ট তালিকা (এখানে ইমেইলগুলো পেস্ট করুন):</h4>", unsafe_allow_html=True)
         input_text = st.text_area(
             "Input Area",
             value=st.session_state.input_emails,
             placeholder="hfgjdgxg318@gmail.com\nfhghhfxhuf@gmail.com\ng94769251@gmail.com",
-            height=280,
+            height=260,
             label_visibility="collapsed"
         )
         st.session_state.input_emails = input_text
@@ -99,18 +158,23 @@ if menu == "🔍 Google Check":
         st.markdown("**Type Mode:**")
         type_mode = st.radio("Type Mode Options", ["Personal Account Mode", "Enterprise/Personal Compatibility Mode"], label_visibility="collapsed")
         
-        st.markdown("**Route:** <span style='background-color:#eaeaea; padding:2px 5px; font-size:12px;'>VIP3 supports 300 queries per time, with continuous speed improvement</span>", unsafe_allow_html=True)
+        st.markdown("**Route:** <span style='background-color:#ffe4e6; color:#9f1239; padding:2px 8px; font-size:12px; border-radius:4px; font-weight:bold;'>VIP3 supports 300 queries per time, with continuous speed improvement</span>", unsafe_allow_html=True)
         route_mode = st.radio("Route Options", ["Free Route", "VIP1 Route", "VIP2 Route", "VIP3 Route"], horizontal=True, label_visibility="collapsed")
         
-        repeat_detection = st.toggle("Repeat Detection", value=True)
-        ignore_format = st.toggle("Ignore email format errors", value=False)
-        check_exists = st.toggle("Check if exists(Slow query)", value=True)
+        # Switches
+        col_sw1, col_sw2, col_sw3 = st.columns(3)
+        with col_sw1:
+            repeat_detection = st.toggle("Repeat Detection", value=True)
+        with col_sw2:
+            ignore_format = st.toggle("Ignore email errors", value=False)
+        with col_sw3:
+            check_exists = st.toggle("Check Exists (Slow)", value=True)
         
         st.markdown("<br>", unsafe_allow_html=True)
-        btn_col1, btn_col2 = st.columns([1, 1])
+        btn_col1, btn_col2 = st.columns([1.2, 1])
         
-        start_check = btn_col1.button("Start Check", type="primary", use_container_width=True)
-        clear_data = btn_col2.button("Clear Data", use_container_width=True)
+        start_check = btn_col1.button("🚀 Start Checker Line", type="primary", use_container_width=True)
+        clear_data = btn_col2.button("🗑️ Clear Live Data", use_container_width=True)
         
         if clear_data:
             st.session_state.input_emails = ""
@@ -121,39 +185,39 @@ if menu == "🔍 Google Check":
             st.session_state.remaining_count = 0
             st.rerun()
 
-    # Right Column: Live Output (Fixed in-place update)
+    # Right Column: Live Output (Beautifully Colored)
     with col_right:
         progress_bar = st.progress(0)
         
-        # ১. কলামগুলো একবারই তৈরি করা হচ্ছে
+        # ৪টি কলাম তৈরি
         h_col1, h_col2, h_col3, h_col4 = st.columns(4)
         
-        # ২. স্ট্যাটাস ট্যাক্স আপডেট করার জন্য .empty() প্লেসহোল্ডার তৈরি করা হলো
+        # কন্টেইনার প্লেসহোল্ডার
         tab_good_placeholder = h_col1.empty()
         tab_verified_placeholder = h_col2.empty()
         tab_not_exist_placeholder = h_col3.empty()
         tab_remaining_placeholder = h_col4.empty()
         
-        # ৩. রেজাল্ট বক্সের জন্য .empty() প্লেসহোল্ডার
+        # রেজাল্ট টেক্সট কন্টেইনার প্লেসহোল্ডার
         box_good = st.empty()
         box_verified = st.empty()
         box_not_exist = st.empty()
         box_remaining = st.empty()
 
-        # প্রাথমিক স্টেজ রেন্ডারিং (অতিরিক্ত কপি তৈরি প্রতিরোধে .empty() ব্যবহার)
-        tab_good_placeholder.markdown(f'<div class="status-tab status-active">Good({len(st.session_state.good_list)})</div>', unsafe_allow_html=True)
-        tab_verified_placeholder.markdown(f'<div class="status-tab">Verified({len(st.session_state.verified_list)})</div>', unsafe_allow_html=True)
-        tab_not_exist_placeholder.markdown(f'<div class="status-tab">Not exists({len(st.session_state.not_exist_list)})</div>', unsafe_allow_html=True)
-        tab_remaining_placeholder.markdown(f'<div class="status-tab">Remaining({st.session_state.remaining_count})</div>', unsafe_allow_html=True)
+        # ইনিশিয়াল সুন্দর রঙিন রেন্ডারিং
+        tab_good_placeholder.markdown(f'<div class="tab-btn btn-good">Good ({len(st.session_state.good_list)})</div>', unsafe_allow_html=True)
+        tab_verified_placeholder.markdown(f'<div class="tab-btn btn-verified">Verified ({len(st.session_state.verified_list)})</div>', unsafe_allow_html=True)
+        tab_not_exist_placeholder.markdown(f'<div class="tab-btn btn-notexists">Not exist ({len(st.session_state.not_exist_list)})</div>', unsafe_allow_html=True)
+        tab_remaining_placeholder.markdown(f'<div class="tab-btn btn-remaining">Remaining ({st.session_state.remaining_count})</div>', unsafe_allow_html=True)
         
-        box_good.markdown(f'<div class="result-box">{"<br>".join(st.session_state.good_list)}</div>', unsafe_allow_html=True)
-        box_verified.markdown(f'<div class="result-box">{"<br>".join(st.session_state.verified_list)}</div>', unsafe_allow_html=True)
-        box_not_exist.markdown(f'<div class="result-box">{"<br>".join(st.session_state.not_exist_list)}</div>', unsafe_allow_html=True)
+        box_good.markdown(f'<div class="result-box box-good">{"<br>".join(st.session_state.good_list)}</div>', unsafe_allow_html=True)
+        box_verified.markdown(f'<div class="result-box box-verified">{"<br>".join(st.session_state.verified_list)}</div>', unsafe_allow_html=True)
+        box_not_exist.markdown(f'<div class="result-box box-notexists">{"<br>".join(st.session_state.not_exist_list)}</div>', unsafe_allow_html=True)
         
         init_rem_text = "<br>".join(parsed_initial_emails) if st.session_state.remaining_count == len(parsed_initial_emails) else "<br>".join(st.session_state.remaining_list)
-        box_remaining.markdown(f'<div class="result-box">{init_rem_text}</div>', unsafe_allow_html=True)
+        box_remaining.markdown(f'<div class="result-box box-remaining">{init_rem_text}</div>', unsafe_allow_html=True)
 
-        # "Start Check" এ ক্লিক করার পর লুপ অ্যাকশন
+        # "Start Check" অ্যাকশন লুপ
         if start_check and input_text.strip():
             emails_to_validate = [line.strip() for line in input_text.split("\n") if line.strip()]
             
@@ -185,29 +249,29 @@ if menu == "🔍 Google Check":
                 # প্রগ্রেস বার
                 progress_bar.progress((idx + 1) / total_count)
                 
-                # নতুন বাটন বা বক্স তৈরি না করে শুধুমাত্র প্লেসহোল্ডারের ভেতরের ভ্যালু আপডেট করা হচ্ছে
-                tab_good_placeholder.markdown(f'<div class="status-tab status-active">Good({len(st.session_state.good_list)})</div>', unsafe_allow_html=True)
-                tab_verified_placeholder.markdown(f'<div class="status-tab">Verified({len(st.session_state.verified_list)})</div>', unsafe_allow_html=True)
-                tab_not_exist_placeholder.markdown(f'<div class="status-tab">Not exists({len(st.session_state.not_exist_list)})</div>', unsafe_allow_html=True)
-                tab_remaining_placeholder.markdown(f'<div class="status-tab">Remaining({st.session_state.remaining_count})</div>', unsafe_allow_html=True)
+                # রিয়েলটাইমে একই জায়গায় রঙিন ভ্যালু পরিবর্তন হচ্ছে
+                tab_good_placeholder.markdown(f'<div class="tab-btn btn-good">Good ({len(st.session_state.good_list)})</div>', unsafe_allow_html=True)
+                tab_verified_placeholder.markdown(f'<div class="tab-btn btn-verified">Verified ({len(st.session_state.verified_list)})</div>', unsafe_allow_html=True)
+                tab_not_exist_placeholder.markdown(f'<div class="tab-btn btn-notexists">Not exist ({len(st.session_state.not_exist_list)})</div>', unsafe_allow_html=True)
+                tab_remaining_placeholder.markdown(f'<div class="tab-btn btn-remaining">Remaining ({st.session_state.remaining_count})</div>', unsafe_allow_html=True)
                 
-                box_good.markdown(f'<div class="result-box">{"<br>".join(st.session_state.good_list)}</div>', unsafe_allow_html=True)
-                box_verified.markdown(f'<div class="result-box">{"<br>".join(st.session_state.verified_list)}</div>', unsafe_allow_html=True)
-                box_not_exist.markdown(f'<div class="result-box">{"<br>".join(st.session_state.not_exist_list)}</div>', unsafe_allow_html=True)
-                box_remaining.markdown(f'<div class="result-box">{"<br>".join(st.session_state.remaining_list)}</div>', unsafe_allow_html=True)
+                box_good.markdown(f'<div class="result-box box-good">{"<br>".join(st.session_state.good_list)}</div>', unsafe_allow_html=True)
+                box_verified.markdown(f'<div class="result-box box-verified">{"<br>".join(st.session_state.verified_list)}</div>', unsafe_allow_html=True)
+                box_not_exist.markdown(f'<div class="result-box box-notexists">{"<br>".join(st.session_state.not_exist_list)}</div>', unsafe_allow_html=True)
+                box_remaining.markdown(f'<div class="result-box box-remaining">{"<br>".join(st.session_state.remaining_list)}</div>', unsafe_allow_html=True)
                 
-                time.sleep(0.1) # নিরাপদ রেট লিমিট স্পিড
+                time.sleep(0.1) # লাইভ স্পিড
                 
             st.success("Verification Completed successfully!")
 
-        # নিচের কপি বাটনগুলো
+        # নীচের ৪টি কাস্টম রঙিন ডাউনলোড বাটন
         st.markdown("<br>", unsafe_allow_html=True)
         act_col1, act_col2, act_col3, act_col4 = st.columns(4)
         
-        act_col1.download_button("Copy Good List", "\n".join(st.session_state.good_list) if st.session_state.good_list else "", file_name="good.txt", use_container_width=True)
-        act_col2.download_button("Copy Verified List", "\n".join(st.session_state.verified_list) if st.session_state.verified_list else "", file_name="verified.txt", use_container_width=True)
-        act_col3.download_button("Copy non-existing list", "\n".join(st.session_state.not_exist_list) if st.session_state.not_exist_list else "", file_name="not_exists.txt", use_container_width=True)
-        act_col4.download_button("Copy Remaining List", "\n".join(st.session_state.remaining_list) if st.session_state.remaining_list else "", file_name="remaining.txt", use_container_width=True)
+        act_col1.download_button("🟢 Copy Good List", "\n".join(st.session_state.good_list) if st.session_state.good_list else "", file_name="good.txt", use_container_width=True)
+        act_col2.download_button("🔵 Copy Verified List", "\n".join(st.session_state.verified_list) if st.session_state.verified_list else "", file_name="verified.txt", use_container_width=True)
+        act_col3.download_button("🔴 Copy non-existing list", "\n".join(st.session_state.not_exist_list) if st.session_state.not_exist_list else "", file_name="not_exists.txt", use_container_width=True)
+        act_col4.download_button("🟡 Copy Remaining List", "\n".join(st.session_state.remaining_list) if st.session_state.remaining_list else "", file_name="remaining.txt", use_container_width=True)
 
 else:
     st.subheader(f"{menu} Feature")
