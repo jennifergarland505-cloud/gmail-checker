@@ -93,7 +93,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 with st.sidebar:
-    st.markdown("<h2 style='color: white; text-align: center;'>⚡ GmailCheck Pro</h2>", unsafe_allow_html=True)
+    st.markdown("<h2 style='color: black !important; text-align: center;'>⚡ GmailCheck Pro</h2>", unsafe_allow_html=True)
     st.markdown("---")
     menu = st.sidebar.radio(
         "Menu",
