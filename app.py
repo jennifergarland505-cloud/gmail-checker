@@ -5,7 +5,7 @@ import pandas as pd
 import time
 
 st.set_page_config(
-    page_title="GmailCheck.com - Premium Google Account Checker",
+    page_title="Shakibul Hasan's GmailCheck.com - Premium Google Account Checker",
     page_icon="⚡",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -93,7 +93,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 with st.sidebar:
-    st.markdown("<h2 style='color: black !important; text-align: center;'>⚡ GmailCheck Pro</h2>", unsafe_allow_html=True)
+    st.markdown("<h2 style='color: black !important; text-align: center;'>⚡ Shakibul Hasan (CSE)</h2>", unsafe_allow_html=True)
     st.markdown("---")
     menu = st.sidebar.radio(
         "Menu",
