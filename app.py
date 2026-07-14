@@ -56,6 +56,18 @@ st.markdown("""
     div[data-testid="stSidebar"] * { color: #cbd5e1 !important; }
     div[data-testid="stSidebar"] .st-emotion-cache-16tx1j3 { background-color: #1e293b; color: white !important; }
 
+    /* সাইডবারের আপলোড করা ছবি গোল এবং সেন্টারে আনার জন্য */
+    .sidebar-img-container {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 15px;
+    }
+    div[data-testid="stSidebar"] img {
+        border-radius: 50%;
+        border: 2px solid #3b82f6;
+        object-fit: cover;
+    }
+
     .tab-btn {
         text-align: center;
         padding: 14px;
@@ -94,12 +106,15 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 with st.sidebar:
-    st.markdown("<h2 style='color: black !important; text-align: center;'>⚡ Shakibul Hasan (CSE)</h2>", unsafe_allow_html=True)
+    st.markdown("<h2 style='color: black !important; text-align: center; margin-bottom: 5px;'>⚡ Shakibul Hasan (CSE)</h2>", unsafe_allow_html=True)
     
     uploaded_file = st.file_uploader("Upload Profile Image", type=["jpg", "jpeg", "png"], label_visibility="collapsed")
     if uploaded_file is not None:
         image = Image.open(uploaded_file)
-        st.image(image, use_container_width=True)
+        
+        st.markdown('<div class="sidebar-img-container">', unsafe_allow_html=True)
+        st.image(image, width=100)
+        st.markdown('</div>', unsafe_allow_html=True)
     
     st.markdown("---")
     menu = st.sidebar.radio(
